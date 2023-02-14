@@ -1,0 +1,23 @@
+{
+	"username" : "thomas.anderon@gmail.com",
+	"password" : "pass1234",
+	"loginmethod" : "swissid",
+	"sender": {
+		"firstname" : "Thomas",
+		"lastname" : "Anderson",
+		"street" : "Langstrasse 60b",
+		"city" : "Zurich",
+		"npa" : 8002
+	},
+	"recipient": {
+		"firstname" : "Agent",
+		"lastname" : "Smith",
+		"street" : "Bahnhofstrasse 17",
+		"city" : "Zurich",
+		"npa" : 8004
+	},
+	"card" : {
+		"message" : "<3"
+	}
+
+}

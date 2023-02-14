@@ -14,23 +14,20 @@ config = json.load(open("/usr/pccb/appdata/configuration.json"))
 def job():
     # Connexion
     token = Token()
-    print("===============================================================")
+    print("\n\n\n===============================================================")
     print("Hi ! First of all, I will try to connect using your credentials")
 
     try:
         token.fetch_token(username=config['username'], password=config['password'], method=config['loginmethod'])
-        # token.has_valid_credentials(username=config['username'], password=config['password'])
         print("Yaaasss I succeed")
     except Exception:
-        print(
-            "Sorry, an error occured while logging you in.\nCheck your username/password\nIf it still does not work, big L for you")
-        exit()
+        print("Sorry, an error occured while logging you in.\nCheck your username/password\nIf it still does not work, big L for you\nI will try again in one hour")
         return
 
     # Does the user has a free postcard available ?
     try:
         w = PostcardCreator(token)
-        if not w.has_free_postcard():
+        if not w.has_free_postcard() :
             print("You don't have free postcard for the moment")
             return
     except Exception:
@@ -42,6 +39,7 @@ def job():
         if filename.lower().endswith(('.jpg', '.jpeg')):
             filepath = os.path.join(directory, filename)
             usedfilepath = os.path.join(useddirectory, filename)
+            print()
             print(f"I found one ! ({filename})")
             print(f"Full path is : {filepath}")
             print("I will now try to send the image")
@@ -77,10 +75,9 @@ def job():
                 cardPicture.close()
                 os.rename(filepath, usedfilepath)
             except Exception:
-                print("I'm really bad... I was not able to send your postcard, I will try again in one hour !")
+                print("I'm a bad robot ... I was not able to send your postcard, I will try again in one hour !")
             if cardWasSent:
                 print("Card was sent")
-                exit()
                 return
             else:
                 print('Card was not sent, trying another...')
@@ -88,7 +85,7 @@ def job():
 
 
 schedule.every(1).seconds.do(job)
-
+print("Welcome to PostcardCreatorBot.\n\nThis script will be executed periodically, every hour.")
 while True:
     schedule.run_pending()
     time.sleep(1)
