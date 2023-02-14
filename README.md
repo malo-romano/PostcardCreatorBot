@@ -4,7 +4,7 @@
 This bot run a python script inside a Docker image. Every hour, the script will
 - Connect to Postcard Creator using yours credentials
 - Check if a free postcard is avalaible
-- Send a Postcard with an image from a folder
+- Send a Postcard
 ## Installation :electric_plug:
 To install this bot, please follows thoses steps
 - Download and install Docker Desktop
