@@ -18,5 +18,5 @@ To install this bot, please follows thoses steps
 	-  select your login method (since june 2022, only SwissID is accepted by Post)
 	- enter the sender and recipient informations
 - Fill in the ``/appdata/images`` folder with beautiful pictures you want on hang to your wall
-	- Please note : images must have an extension type of ``jpg`` or ``jpeg``.
+	- Please note : images must have an extension type of ``jpg``, ``jpeg`` or ``png``.
 - Run the ``RUN.bat`` script, by double-clicking it
