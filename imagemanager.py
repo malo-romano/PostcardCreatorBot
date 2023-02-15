@@ -1,4 +1,6 @@
 from PIL import Image
+from datetime import datetime
+import locale
 
 def resize_image(filepath):
     try:
@@ -27,3 +29,13 @@ def resize_image(filepath):
             image_resized.close()
     except Exception as e:
         print("Error while resizing the image : " + str(e))
+
+def get_datetime_taken(filepath):
+    locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+    image = Image.open(filepath)
+    exif = image.getexif()
+
+    if exif and exif[306]:
+        return datetime.strptime(exif[306], "%Y:%m:%d %H:%M:%S").strftime('%A %d/%m/%Y %H:%M:%S')
+
+    return None

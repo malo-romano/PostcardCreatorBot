@@ -1,4 +1,5 @@
 from postcardmanager import job
-from postcardmanager import resize_image
+from imagemanager import resize_image
+from imagemanager import get_datetime_taken
 
 job()

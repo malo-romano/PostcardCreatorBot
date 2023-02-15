@@ -1,6 +1,6 @@
 import os
 from postcard_creator.postcard_creator import PostcardCreator, Postcard, Token, Recipient, Sender
-from imagemanager import resize_image
+from imagemanager import resize_image,  get_datetime_taken
 import settings
 
 def job():
@@ -65,8 +65,14 @@ def send_postcard(w, config, filepath, usedfilepath):
             zip_code=config['sender']['npa'])
 
         cardPicture = open(filepath, 'rb')
+        message = "***************************************\n"
+        message += config['card']['message']
+        datetime = get_datetime_taken(filepath)
+        if datetime is not None:
+            message += " " + datetime
+        message = message.replace(" ", "\n")
         card = Postcard(
-            message=config['card']['message'],
+            message=message,
             recipient=recipient,
             sender=sender,
             picture_stream=cardPicture)
@@ -79,5 +85,3 @@ def send_postcard(w, config, filepath, usedfilepath):
     except Exception as e:
         print("I'm a bad robot ... I was not able to send your postcard : " + str(e))
         return False
-
-
