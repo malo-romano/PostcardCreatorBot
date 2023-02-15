@@ -1,6 +1,7 @@
 from PIL import Image
 from datetime import datetime
 import locale
+from geopy.geocoders import Nominatim
 
 def resize_image(filepath):
     try:
@@ -39,3 +40,33 @@ def get_datetime_taken(filepath):
         return datetime.strptime(exif[306], "%Y:%m:%d %H:%M:%S").strftime('%A %d/%m/%Y %H:%M:%S')
 
     return None
+
+def get_location_info(filepath):
+    image = Image.open(filepath)
+    exif = image._getexif()
+
+    if exif:
+        gps_info = exif.get(34853)
+        if gps_info:
+            lat = dms_to_dd(gps_info[2][0], gps_info[2][1], gps_info[2][2])
+            lon = dms_to_dd(gps_info[4][0], gps_info[4][1], gps_info[4][2])
+
+            geolocator = Nominatim(user_agent='pccb')
+            location = geolocator.reverse(f"{lat}, {lon}")
+
+            # Getting city/country from location
+            city = location.raw['address'].get('city')
+            country = location.raw['address'].get('country')
+
+            return city, country
+
+    return None, None
+
+
+def dms_to_dd(d, m, s):
+    # Convert Degree Minute Seconde to Decimal Degree
+    if d < 0:
+        dd = float(d) - float(m)/60 - float(s)/3600
+    else:
+        dd = float(d) + float(m)/60 + float(s)/3600
+    return dd

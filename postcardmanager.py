@@ -1,19 +1,23 @@
 import os
 from postcard_creator.postcard_creator import PostcardCreator, Postcard, Token, Recipient, Sender
-from imagemanager import resize_image,  get_datetime_taken
+from imagemanager import resize_image, get_datetime_taken, get_location_info
 import settings
+import time
+
 
 def job():
-    # Connexion
+    # Connection
     token = Token()
     print("\n\n\n===============================================================")
     print("Hi ! First of all, I will try to connect using your credentials")
 
     try:
-        token.fetch_token(username=settings.config['username'], password=settings.config['password'], method=settings.config['loginmethod'])
+        token.fetch_token(username=settings.config['username'], password=settings.config['password'],
+                          method=settings.config['loginmethod'])
         print("Yaaasss I succeed")
     except Exception:
-        print("Sorry, an error occured while logging you in.\nCheck your username/password\nIf it still does not work, big L for you\nI will try again in one hour")
+        print(
+            "Sorry, an error occured while logging you in.\nCheck your username/password\nIf it still does not work, big L for you\nI will try again in one hour")
         return
 
     # Does the user has a free postcard available ?
@@ -29,7 +33,8 @@ def job():
         return
 
     print("I'm now searching for available picture to send")
-    # Parcours des fichiers dans le répertoire
+
+    # Iterating over files in the folder
     for filename in os.listdir(settings.directory):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
             filepath = os.path.join(settings.directory, filename)
@@ -47,41 +52,46 @@ def job():
                 return
             else:
                 print('Card was not sent, trying another...')
+                time.sleep(1)
+
 
 def send_postcard(w, config, filepath, usedfilepath):
-    try:
-        recipient = Recipient(
-            prename=config['recipient']['firstname'],
-            lastname=config['recipient']['lastname'],
-            street=config['recipient']['street'],
-            place=config['recipient']['city'],
-            zip_code=config['recipient']['npa'])
+    recipient = Recipient(
+        prename=config['recipient']['firstname'],
+        lastname=config['recipient']['lastname'],
+        street=config['recipient']['street'],
+        place=config['recipient']['city'],
+        zip_code=config['recipient']['npa'])
 
-        sender = Sender(
-            prename=config['sender']['firstname'],
-            lastname=config['sender']['lastname'],
-            street=config['sender']['street'],
-            place=config['sender']['city'],
-            zip_code=config['sender']['npa'])
+    sender = Sender(
+        prename=config['sender']['firstname'],
+        lastname=config['sender']['lastname'],
+        street=config['sender']['street'],
+        place=config['sender']['city'],
+        zip_code=config['sender']['npa'])
 
-        cardPicture = open(filepath, 'rb')
-        message = "***************************************\n"
-        message += config['card']['message']
-        datetime = get_datetime_taken(filepath)
-        if datetime is not None:
-            message += " " + datetime
-        message = message.replace(" ", "\n")
-        card = Postcard(
-            message=message,
-            recipient=recipient,
-            sender=sender,
-            picture_stream=cardPicture)
+    cardPicture = open(filepath, 'rb')
 
-        cardWasSent = w.send_free_card(postcard=card, mock_send=settings.mockmode, image_export=False)
-        cardPicture.close()
-        os.rename(filepath, usedfilepath)
-        return cardWasSent
+    message = ""
+    message += config['card']['message']
+    datetime = get_datetime_taken(filepath)
+    if datetime is not None:
+        message += " " + datetime
+    message = message.replace(" ", "\n")
 
-    except Exception as e:
-        print("I'm a bad robot ... I was not able to send your postcard : " + str(e))
-        return False
+    location = get_location_info(filepath)
+    if location[0] is not None:
+        message += " " + location[0]
+    if location[1] is not None:
+        message += " " + location[1]
+
+    card = Postcard(
+        message=message,
+        recipient=recipient,
+        sender=sender,
+        picture_stream=cardPicture)
+
+    cardWasSent = w.send_free_card(postcard=card, mock_send=settings.mockmode, image_export=False)
+    cardPicture.close()
+    os.rename(filepath, usedfilepath)
+    return cardWasSent
