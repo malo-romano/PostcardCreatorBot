@@ -10,7 +10,7 @@ To install this bot, please follows thoses steps
 - Download and install Docker Desktop
 	- https://docs.docker.com/desktop/install/windows-install/ 
 - Download this Github repository on your PC
-	- https://github.com/malo-romano/PostcardCreatorBot/archive/refs/heads/main.zip
+	- https://github.com/malo-romano/PostcardCreatorBot/archive/refs/tags/v0.1.zip
 - Unzip it anywhere you want (C: drive, Desktop, whatever...)
 - In the ``appdata`` folder, copy the ``configuration.json.template`` file and rename it to ``configuration.json``
 - Open the file with an editor (notepad, notepad++, etc)
